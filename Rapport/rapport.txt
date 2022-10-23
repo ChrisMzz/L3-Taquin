@@ -1,0 +1,9 @@
+Il y a toujours n²! états possibles
+complexité : 
+
+	calculs : build_graph : O(n²!),  solve : dijkstra + O(n²!)
+
+	l'ensemble des noeuds d'un graphe évolue ici à mesure de n²! où n est la longueur du carré du jeu de taquin
+	spatiale : chercher influence d'un surménage de calculs sur la RAM, processeurs multi-coeurs, parallélisme de tâches...
+	temporelle : calculs + temps perdu à cause des données à stocker en RAM
+
