@@ -4,11 +4,10 @@ from graph import *
 #https://github.com/ChrisMzz/Algebra-modules
 from group import *
 
-n = 2
-
+n = 3
 
 def build_graph(n, p=0):
-    adjency = {}
+    adjacency = {}
     parity = {}
     S = SymmetricGroup(n**2-1) 
     for i in range(n):
@@ -18,24 +17,30 @@ def build_graph(n, p=0):
                 verteces = []
                 state = sigma[:n*i+j] + [0] + sigma[n*i+j:]
                 if n*i+j+1 < n**2 and ((j+1) // n) == (j // n): #Case droite
-                    verteces.append(tuple(sigma[:n*i+j+1] + [0] + sigma[n*i+j+1:])) # conserves sigma's signature
-                if n*i+j-1 > 0 and ((j-1) // n) == (j // n) : #Case gauche
-                    verteces.append(tuple(sigma[:n*i+j-1] + [0] + sigma[n*i+j-1:])) # conserves sigma's signature
+                    verteces.append(tuple(sigma[:n*i+j+1] + [0] + sigma[n*i+j+1:])) # conserve la signature de sigma
+                if n*i+j-1 >= 0 and ((j-1) // n) == (j // n) : #Case gauche
+                    verteces.append(tuple(sigma[:n*i+j-1] + [0] + sigma[n*i+j-1:])) # conserve la signature de sigma
                 if n*(i-1)+j >= 0: #Case supérieure
                     swapped = state[n*(i-1)+j]
-                    state[n*(i-1)+j], state[n*i+j] = 0, swapped  
+                    state[n*(i-1)+j], state[n*i+j] = 0, swapped
                     verteces.append(tuple(state))
+                    state[n*(i-1)+j], state[n*i+j] = swapped, 0
                 if n*(i+1)+j < n**2: #Case inférieure
                     swapped = state[n*(i+1)+j]
                     state[n*(i+1)+j], state[n*i+j] = 0, swapped                
                     verteces.append(tuple(state))
-                parity[node] = (int(S.signature(sigma)==1) + i) % 2
-                # using Keith Conrad's study in his paper on the 15-puzzle, we know it's isomorphic to A15, so we can abuse 
-                # shortcut formulas such as this one to find sigma's parity
-                adjency[node] = verteces
+                parity[node] = (int(S.signature(sigma)==1) + (n-i)) % 2
+                # Les deux opérations ci-dessus (cases supérieure et inférieure) changent la parité de sigma, ce qui nous permet donc d'associer :
+                    # Une permutation sigma de signature 1 et dont la position du 0 est sur la dernière ligne (ou un indice = dernière ligne mod 2)
+                    # engendre un état pair. Si la position du 0 est sur une des autres lignes, l'état est impair.
+                    # Inversement, une permutation sigma de signature -1 et dont la position du 0 est sur la dernière ligne (ou un indice = dernière ligne mod 2)
+                    # engendre un état impair. Si la position du 0 est sur une des autres lignes, l'état est pair.
+                # J'utilise des notions abordées par Keith Conrad dans son étude du "15-puzzle"
+                # qui engendre des raccourcis mathématiques sur la parité d'un élément.
+                adjacency[node] = verteces
     puzzle = MyGraph()
-    for node in adjency.keys():
-        for connected_node in adjency[node]:
+    for node in adjacency.keys():
+        for connected_node in adjacency[node]:
             puzzle.add_arc((node, connected_node))
     return (puzzle, parity)[p]
 
@@ -69,5 +74,7 @@ source = tuple(source)
 
 
 source_parity = ("pair", "impair")[build_graph(n,1)[source]]
+t = time.time()
 print(f"{source} est un état {source_parity}.")
 solve(source)
+print(f"Fini en {time.time() - t} secondes.")
