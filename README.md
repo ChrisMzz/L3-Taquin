@@ -63,7 +63,7 @@ class Taquin:
 
 `textshow` permet d'afficher les nombres dans les cases si vous avez du mal à repérer les valeurs en ne regardant que les couleurs.
 
-![](https://github.com/ChrisMzz/L3-Taquin/tree/main/source/images/3/(0,_3,_5,_8,_6,_1,_2,_7,_4)_-_pair.gif)
+![](https://github.com/ChrisMzz/L3-Taquin/blob/main/source/images/3/(0%2C%203%2C%205%2C%208%2C%206%2C%201%2C%202%2C%207%2C%204)%20-%20pair.gif)
 
 
 ### La solution finale peut être modifiée :
